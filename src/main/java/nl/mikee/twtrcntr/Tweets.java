@@ -1,5 +1,7 @@
 package nl.mikee.twtrcntr;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import twitter4j.*;
 
 import java.time.LocalDate;
@@ -10,6 +12,7 @@ import java.util.List;
  * Created by mike on 06/02/16.
  */
 public class Tweets {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Tweets.class);
 
     private Twitter twitter;
 
@@ -58,7 +61,7 @@ public class Tweets {
 
             return searchCounter;
         }catch(TwitterException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("Error while reading tweets from Twitter", e);
             return null;
         }
 

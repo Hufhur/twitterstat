@@ -1,19 +1,31 @@
 package nl.mikee.twtrcntr;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 
 /**
  * Created by mike on 06/02/16.
  */
 public class Runner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Runner.class);
 
     Config config = new Config();
     SearchHandler searchHandler = new SearchHandler();
     SearchCounter searchCounter;
     SearchCounterDAO searchCounterDAO = new SearchCounterDAO();
+    Boolean doSaveResult = true;
 
     public static void main(String[] args) {
+        LOGGER.info("TweetStat started.");
+
+
         Runner runner = new Runner();
+        if(args.length > 0  && args[0].equalsIgnoreCase("NOSAVE")){
+            runner.doSaveResult = false;
+            LOGGER.info("App started with NOSAVE option. Result will not be saved.");
+        }
         runner.go();
     }
 
@@ -29,12 +41,13 @@ public class Runner {
 
                 searchCounter = tweets.countHashTag(hashtag, since, until);
 
-                searchCounterDAO.saveSearchCounter(searchCounter);
+                if(doSaveResult)
+                  searchCounterDAO.saveSearchCounter(searchCounter);
 
             }
 
         } else {
-            System.out.println("No searches found.");
+            LOGGER.info("No searches found.");
         }
 
     }
